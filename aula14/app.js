@@ -30,7 +30,7 @@ app.put("/alunos/update/:id", (req, res) =>{
     alunos[req.params.id] = nome;
     return res.json(alunos[req.params.id])
 })
-
+//Metodo Delete
 app.delete("/alunos/delete/:id", (req, res) =>{
     alunos.splice(req.params.id,1)
     return res.json(alunos[req.params.id])

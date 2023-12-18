@@ -1,3 +1,0 @@
-//Recomendação de livro
-clean code
-//Metodologia MVC
