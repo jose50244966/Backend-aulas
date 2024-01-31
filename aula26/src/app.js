@@ -11,6 +11,30 @@ const alunos = [
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 
+const findAluno = (id, array) => {
+    const alunoId = array.findIndex(element => element.id === id);
+    if(alunoId === -1){
+        return `ID invalido, nenhum aluno com o id ${id} foi encontrado`
+    } else{
+        return alunoId
+    }
+
+}
+const createId = (array) => {
+    let id = 1
+    if(!isNaN(findAluno(id, array))){
+        for(let k = 0; k < array.length; k++){
+            for(let i = 0; i < array.length; i++){
+                if(id === array[i].id){
+                    id++;
+                    break;
+                }
+            }
+        }
+    }
+    return id
+}
+
 app.get("/", (req, res) => {
     res.status(200).send(`Teste`)
 });
@@ -24,41 +48,43 @@ app.get("/alunos", (req, res) => {
     } 
 });
 
-//Adicionar usuario usando POST
+// Adicionar aluno usando POST
 
 app.post("/alunos", (req, res) => {
     const aluno = {
-        id: parseInt(req.body.id),
+        id: createId(alunos),
         nome: req.body.nome
     };
-    if(!aluno.id || !aluno.nome){
-        res.status(400);
-        res.json({message: "Informação invalida, adicione um nome e um a id"})
+    if(!aluno.nome){
+        res.status(400).json({message: "Informação invalida, adicione um nome"})
     } else{
-        res.status(201);
         alunos.push(aluno);
-        res.json({message: `${aluno.nome} foi adicionado`});
+        res.status(201).json(aluno);
     }
     
 });
 
-// Deletar usuario usando DELETE
+// Deletar aluno usando DELETE
 app.delete("/alunos/:id", (req, res) => {
     const id = parseInt(req.params.id);
-    const findId = alunos.findIndex(element => element.id === id);
-    if(findId === -1){
-        res.status(404).json({message: "Aluno não foi encontrado"});
+    const found = findAluno(id, alunos);
+    if(isNaN(found)){
+        res.status(404).json({message: found});
     } else{
-        alunos.splice(findId, 1);
-        res.status(202).json({message: `O aluno de id ${req.params.id} foi removido`})
+        alunos.splice(found, 1);
+        res.status(200).json({message: `O aluno de id ${id} foi apagado`});
     }
 });
 
-app.put("alunos/:id", (req, res) => {
+// Atualizar aluno usando PUT
+app.put("/alunos/:id", (req, res) => {
     const id = parseInt(req.params.id);
-    const findAlunos = alunos.find(element => element.id === id);
-    if(!findAlunos){
-        
+    const found = findAluno(id, alunos);
+    if(isNaN(found)){
+        res.status(404).json({message: found});
+    }else {
+        alunos[found].name = req.body.nome;
+        res.status(200).json({message: `O aluno de id ${id} foi alterado com sucesso`});
     }
 })
 
