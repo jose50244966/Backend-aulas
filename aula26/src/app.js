@@ -49,7 +49,6 @@ app.get("/alunos", (req, res) => {
 });
 
 // Adicionar aluno usando POST
-
 app.post("/alunos", (req, res) => {
     const aluno = {
         id: createId(alunos),
@@ -63,6 +62,17 @@ app.post("/alunos", (req, res) => {
     }
     
 });
+// Pesquisar aluno por id usando GET
+app.get("/alunos/:id", (req, res) => {
+    const id = parseInt(req.params.id);
+    const found = findAluno(id, alunos);
+    if(isNaN(found)){
+        res.status(404).json({message: found});
+    }else {
+        res.status(200).json(alunos[found]);
+    }
+
+})
 
 // Deletar aluno usando DELETE
 app.delete("/alunos/:id", (req, res) => {
