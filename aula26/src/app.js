@@ -52,9 +52,9 @@ app.get("/alunos", (req, res) => {
 app.post("/alunos", (req, res) => {
     const aluno = {
         id: createId(alunos),
-        nome: req.body.nome
+        name: req.body.name
     };
-    if(!aluno.nome){
+    if(!aluno.name){
         res.status(400).json({message: "Informação invalida, adicione um nome"})
     } else{
         alunos.push(aluno);
@@ -93,8 +93,8 @@ app.put("/alunos/:id", (req, res) => {
     if(isNaN(found)){
         res.status(404).json({message: found});
     }else {
-        alunos[found].name = req.body.nome;
-        res.status(200).json({message: `O aluno de id ${id} foi alterado com sucesso`});
+        alunos[found].name = req.body.name;
+        res.status(200).json(alunos[found]);
     }
 })
 
